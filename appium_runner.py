@@ -19,6 +19,8 @@ class AppiumRunner(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.btnRun.clicked.connect(self.btnRun_clicked)
+        self.ui.leCmd.setText(settings.CMD)
+        self.running = False
 
     def __get_output(text):
         pass
@@ -26,17 +28,44 @@ class AppiumRunner(QtGui.QMainWindow):
     def _print_output(self, text):
         self.ui.teOutput.append(text)
 
-    def btnRun_clicked(self):
-        self.ui.leCmd.setText(str(settings.CMD))
-        self.cmdr = CommandRunner([settings.CMD])
+    def _clear_output(self):
+        self.ui.teOutput.clear()
+
+    def __start_appium(self):
+        self.cmdr = CommandRunner([self.ui.leCmd.text()])
         self.cmdr.run()
+        self.ui.teOutput.append('>> Starting appium...')
         self.reader = OutputReader(self.cmdr, self.ui.teOutput)
         self.connect(self.reader, SIGNAL("update(QString)"),
                      self._print_output)
         self.reader.start()
+        self.ui.btnRun.setText('Stop')
+        self.ui.lbStatus.setText('Running...')
+        self.running = True
+
+    def __kill_appium(self):
+        self.reader.stop()
+        self.cmdr.stop()
+        # self._clear_output()
+        self.ui.btnRun.setText('Run')
+        self.ui.lbStatus.setText('Stopped. Idle.')
+        self.ui.teOutput.append('>> Appium STOPED.')
+        self.running = False
+
+    def btnRun_clicked(self):
+        if not self.running:
+            self.__start_appium()
+        else:
+            self.__kill_appium()
+
+    def clean_up(self):
+        if self.running:
+            self.__kill_appium()
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     appium_runner = AppiumRunner()
     appium_runner.show()
-    sys.exit(app.exec_())
+    _res = app.exec_()
+    appium_runner.clean_up()
+    sys.exit(_res)
