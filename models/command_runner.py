@@ -15,4 +15,9 @@ class CommandRunner(Thread):
 
     def run(self):
         self.__process = Popen(self.command, stdout=PIPE, stderr=PIPE,
-                             shell=True)
+                               shell=True)
+
+    def stop(self):
+        if self.__process:
+            self.__process.kill()
+            self.__process = None
