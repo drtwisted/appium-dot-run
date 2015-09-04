@@ -77,4 +77,4 @@ class Ui_MainWindow(object):
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'Cantarell\'; font-size:11pt;\"><br /></p></body></html>", None))
         self.lbStatus.setText(_translate("MainWindow", "Idle.", None))
 
-import resources_rc
+import resources.resources_rc
