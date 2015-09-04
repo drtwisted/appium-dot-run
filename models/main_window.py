@@ -59,7 +59,7 @@ class Ui_MainWindow(object):
         self.teOutput = QtGui.QTextEdit(self.centralwidget)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Monospace"))
-        font.setPointSize(12)
+        font.setPointSize(10)
         self.teOutput.setFont(font)
         self.teOutput.setReadOnly(True)
         self.teOutput.setObjectName(_fromUtf8("teOutput"))
