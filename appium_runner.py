@@ -49,7 +49,7 @@ class AppiumRunner(QtGui.QMainWindow):
         # self._clear_output()
         self.ui.btnRun.setText('Run')
         self.ui.lbStatus.setText('Stopped. Idle.')
-        self.ui.teOutput.append('>> Appium STOPED.')
+        self.ui.teOutput.append('>> Appium STOPPED.')
         self.running = False
 
     def btnRun_clicked(self):
