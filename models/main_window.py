@@ -26,15 +26,21 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
         MainWindow.resize(894, 682)
-        MainWindow.setStyleSheet(_fromUtf8(".QTextEdit\n"
-"{\n"
-"background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(30, 26, 47, 255), stop:0.55 rgba(24, 42, 69, 255), stop:0.985 rgba(0, 0, 0, 255), stop:1 rgba(0, 0, 0, 0));\n"
-"background-image: url(:/img/appium_logo_rgb.png);\n"
-"background-repeat: no-repeat;\n"
-"background-position: right bottom;\n"
-"background-attachment: fixed;\n"
-"color: rgb(231, 231, 231);\n"
-"}"))
+        MainWindow.setStyleSheet(
+            _fromUtf8(".QTextEdit\n"
+                      "{\n"
+                      "background-color: qlineargradient("
+                      "spread:pad, x1:0, y1:0, x2:0, y2:1, "
+                      "stop:0 rgba(30, 26, 47, 255), "
+                      "stop:0.55 rgba(24, 42, 69, 255), "
+                      "stop:0.985 rgba(0, 0, 0, 255), "
+                      "stop:1 rgba(0, 0, 0, 0));\n"
+                      "background-image: url(:/img/appium_logo_rgb.png);\n"
+                      "background-repeat: no-repeat;\n"
+                      "background-position: right bottom;\n"
+                      "background-attachment: fixed;\n"
+                      "color: rgb(231, 231, 231);\n"
+                      "}"))
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.gridLayout_2 = QtGui.QGridLayout(self.centralwidget)
@@ -68,13 +74,26 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(_translate("MainWindow", "Appium Runner", None))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Appium Runner",
+                                             None))
         self.btnRun.setText(_translate("MainWindow", "Run", None))
-        self.teOutput.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Monospace\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'Cantarell\'; font-size:11pt;\"><br /></p></body></html>", None))
+        self.teOutput.setHtml(
+            _translate("MainWindow",
+                       "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" "
+                       "\"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                       "<html><head><meta name=\"qrichtext\" content=\"1\" />"
+                       "<style type=\"text/css\">\n"
+                       "p, li { white-space: pre-wrap; }\n"
+                       "</style></head>"
+                       "<body style=\" font-family:\'Monospace\'; "
+                       "font-size:12pt; font-weight:400; "
+                       "font-style:normal;\">\n"
+                       "<p style=\"-qt-paragraph-type:empty; "
+                       "margin-top:0px; margin-bottom:0px; "
+                       "margin-left:0px; margin-right:0px; "
+                       "-qt-block-indent:0; text-indent:0px; "
+                       "font-family:\'Cantarell\'; font-size:11pt;\"><br />"
+                       "</p></body></html>", None))
         self.lbStatus.setText(_translate("MainWindow", "Idle.", None))
 
 import resources.resources_rc
