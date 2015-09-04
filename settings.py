@@ -1,3 +1,5 @@
 __author__ = 'twisted'
 
-CMD = 'node /home/twisted/playground/appium --log-timestamp --log-level=info'
+_CMD = 'node /home/omelchek/bin/appium '
+PARAMS = '--log-no-colors --log-timestamp --log-level=info'
+CMD = _CMD + PARAMS
