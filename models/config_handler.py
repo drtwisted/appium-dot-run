@@ -24,6 +24,22 @@ class AppiumRunnerConfig(ConfigHandler):
         self.opt_appiumlocation = 'appium_location'
         self.opt_loglevel = 'log_level'
         self.opt_timestamp = 'time_stamp'
+        self.opt_coloroutput = 'color_output'
+
+    def __bool_getter(self, param):
+        val = str(self.get(self.__identity, param))
+        if val.lower() == 'yes':
+            return True
+        elif val.lower() == 'no':
+            return False
+
+    def __bool_setter(self, param, value):
+        if value:
+            val = 'yes'
+        else:
+            val = 'no'
+
+        self.set(self.__identity, param, val)
 
     @property
     def is_valid(self):
@@ -45,16 +61,14 @@ class AppiumRunnerConfig(ConfigHandler):
 
     @property
     def time_stamp(self):
-        val = str(self.get(self.__identity, self.opt_timestamp))
-        if val.lower() == 'yes':
-            return True
-        elif val.lower() == 'no':
-            return False
+        return self.__bool_getter(self.opt_timestamp)
 
     def set_time_stamp(self, show):
-        if show:
-            val = 'yes'
-        else:
-            val = 'no'
+        self.__bool_setter(self.opt_timestamp, show)
 
-        self.set(self.__identity, self.opt_timestamp, val)
+    @property
+    def color_output(self):
+        return self.__bool_getter(self.opt_coloroutput)
+
+    def set_color_output(self, use):
+        self.__bool_setter(self.opt_coloroutput, use)
