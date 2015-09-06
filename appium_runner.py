@@ -25,7 +25,6 @@ class AppiumRunner(QtGui.QMainWindow):
         self.__hide_settings()
 
         self.config = AppiumRunnerConfig(settings.CONFIG_PATH)
-
         self.__read_config()
 
         # Button signals connections
@@ -37,14 +36,7 @@ class AppiumRunner(QtGui.QMainWindow):
         self.ui.btnBrowseAppiumLocation.clicked.connect(
             self.btnBrowseAppiumLocation_clicked)
 
-        # self.ui.leCmd.setText(settings.CMD)
         self.running = False
-
-    def _print_output(self, text):
-        self.ui.teOutput.append(text)
-
-    def _clear_output(self):
-        self.ui.teOutput.clear()
 
     def __hide_settings(self):
         self.ui.frmSettings.setVisible(False)
@@ -65,22 +57,17 @@ class AppiumRunner(QtGui.QMainWindow):
 
         self.ui.cmbOutputMode.setCurrentIndex(info_index)
 
-    def __get_timestamp_state(self):
-        if self.config.time_stamp:
-            self.ui.cbShowTimeStamp.setChecked(True)
-
-    def __get_appium_location_path(self):
-        self.ui.leAppiumLocation.setText(self.config.appium_location)
-
     def __read_config(self):
-        self.__get_appium_location_path()
-        self.__get_timestamp_state()
+        self.ui.leAppiumLocation.setText(self.config.appium_location)
+        self.ui.cbShowTimeStamp.setChecked(self.config.time_stamp)
+        self.ui.cbColorOutput.setChecked(self.config.color_output)
         self.__populate_modes_combobox()
 
     def __save_config(self):
         self.config.set_appium_location(self.ui.leAppiumLocation.text())
         self.config.set_log_level(self.ui.cmbOutputMode.currentText())
         self.config.set_time_stamp(self.ui.cbShowTimeStamp.isChecked())
+        self.config.set_color_output(self.ui.cbColorOutput.isChecked())
         self.config.save()
 
     def __collect_appium_options(self):
@@ -128,6 +115,58 @@ class AppiumRunner(QtGui.QMainWindow):
             self, caption='Select Appium directory',
             options=QtGui.QFileDialog.ShowDirsOnly))
 
+    @staticmethod
+    def __parse_output(text, color=False):
+        _template = '>> {}: {} - {}'
+        _color = '<font color={color}>{}</font>'
+        _red = _color.format(color='"red"')
+        _green = _color.format(color='"green"')
+        _blue = _color.format(color='"blue"')
+        _gray = _color.format(color='"gray"')
+        _type = text[26:30]
+
+
+        if color:
+            if _type == settings.LogLevel.INFO:
+                _type = _green.format(_type)
+            elif _type == settings.LogLevel.ERROR:
+                _type = _red.format(_type)
+            elif _type == settings.LogLevel.DEBUG:
+                _type = _blue.format(_type)
+            return _template.format(
+                _type, text[:23], _gray.format(text[32:]))
+        else:
+            return _template.format(_type, text[:23], text[32:])
+
+    def _print_output(self, text):
+        def parse_output(text, color=False):
+            _template = '>> {}: {} - {}'
+            _color = '<font color={color}>{ender}'
+            _ender = '{}</font>'
+            _red = _color.format(color='"red"', ender=_ender)
+            _green = _color.format(color='"green"', ender=_ender)
+            _blue = _color.format(color='"blue"', ender=_ender)
+            _gray = _color.format(color='"gray"', ender=_ender)
+            _type = text[26:30]
+
+            if color:
+                if _type == settings.LogLevel.INFO:
+                    _type = _green.format(_type)
+                elif _type == settings.LogLevel.ERROR:
+                    _type = _red.format(_type)
+                elif _type == settings.LogLevel.DEBUG:
+                    _type = _blue.format(_type)
+                return _template.format(
+                    _type, text[:23], _gray.format(text[32:]))
+            else:
+                return _template.format(_type, text[:23], text[32:])
+
+        self.ui.teOutput.append(
+            parse_output(text, color=self.ui.cbColorOutput.isChecked()))
+
+    def _clear_output(self):
+        self.ui.teOutput.clear()
+
     @property
     def settings_opened(self):
         return self.ui.frmSettings.isVisible()
@@ -135,7 +174,7 @@ class AppiumRunner(QtGui.QMainWindow):
     # Settings section
     def btnBrowseAppiumLocation_clicked(self):
         _dir = self.__select_appium_dir()
-        if isinstance(_dir, str):
+        if isinstance(_dir, str) and not _dir == '':
             self.ui.leAppiumLocation.setText(_dir)
 
     def btnRun_clicked(self):

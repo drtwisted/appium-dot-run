@@ -1,0 +1,42 @@
+- New settings inverface
+- options:
+    * Show appium startup command
+    * write to log: -g --log
+    * use local timezone for timestamps: --local-timezone
+    *** send log to this webhook: --webhook
+    * application path: --app
+    * adress to run the server on: -address ADDRESS
+    * port to run the server on: --port
+    ** callback address: --callback-address
+    ** calback port: --callback-port
+    ** bootstrap port, to connect to on Android device: --bootstrap-port
+    *** Session overrid: --session-override
+    * don't reset app state between sessions: --no-reset
+    * Java package to run: --app-pkg
+    * activity to launch from the package: --app-activity
+    * wait for activity: --app-wait-activity
+    ** android coverage: --android-coverage
+    ** launch AVD: --avd 
+    ** AVD args: --avd-args
+    * android device READY timeout: --device-ready-timeout (seconds)
+    * Device name: --device-name
+    ** automation name: --automation-name Appium or Selendroid
+    *** Use Keystore to sign apks: --use-keystore
+    *** Keystore path: --keystore-path
+    *** Keystore password: --keystore-password
+    *** Key alias: --key-alias
+    *** Key password: --key-password
+    * Command Timeout: --comand-timeout (< 2147483)
+    *** Strict caps: --strict-caps
+    *** Tmp dir: --tmp
+    **** Intent action to start the app activity:
+        --intent-action
+        --intent-category
+        --intent-flags
+        --intent-args
+    ** Don't stop app on reset: --dont-stop-app-on-reset
+    ****** --debug-log-spacing (wider spaces)
+    ** Don't kill adb server: --suppress-adb-kill-server
+    *** Add long stack traces to log: --async-trace
+- Install appium using npm
+- Provide info how to install nodejs, npm.
