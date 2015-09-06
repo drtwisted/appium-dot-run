@@ -1,7 +1,7 @@
 __author__ = 'twisted'
 
 
-class OptionGroups:
+class SettingsGroups:
     app_path = 'AppPath'
     app_package = 'AppPackage'
     app_activity = 'AppActivity'
@@ -12,3 +12,15 @@ class OptionGroups:
     server_address = 'ServerAddress'
     server_port = 'ServerPort'
     server_command_timeout = 'ServerCommandTimeout'
+
+SETTINGS_GROUPS = (
+    'AppPath',
+    'AppActivity',
+    'AppPackage',
+    'WaitForActivity',
+    'DeviceName',
+    'DeviceReadyTimeout',
+    'UseLocalTimeZone',
+    'ServerAddress',
+    'ServerPort',
+    'ServerCommandTimeout')

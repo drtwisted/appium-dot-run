@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>894</width>
-    <height>682</height>
+    <width>1042</width>
+    <height>753</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,7 +39,14 @@ color: rgb(231, 231, 231);
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
+    <item row="2" column="0">
+     <widget class="QLabel" name="lbStatus">
+      <property name="text">
+       <string>Idle.</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
@@ -170,13 +177,16 @@ color: rgb(231, 231, 231);
            </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <property name="spacing">
+              <number>0</number>
+             </property>
              <property name="sizeConstraint">
               <enum>QLayout::SetDefaultConstraint</enum>
              </property>
              <item>
-              <widget class="QGroupBox" name="grpMainSettings">
+              <widget class="QFrame" name="frame">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -184,150 +194,724 @@ color: rgb(231, 231, 231);
                <property name="minimumSize">
                 <size>
                  <width>0</width>
-                 <height>136</height>
+                 <height>400</height>
                 </size>
                </property>
-               <property name="title">
-                <string>Main</string>
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
                </property>
-               <widget class="QWidget" name="layoutWidget">
-                <property name="geometry">
-                 <rect>
-                  <x>5</x>
-                  <y>30</y>
-                  <width>301</width>
-                  <height>61</height>
-                 </rect>
-                </property>
-                <layout class="QVBoxLayout" name="verticalLayout_3">
-                 <item>
-                  <widget class="QLabel" name="lbAppiumLocation">
-                   <property name="text">
-                    <string>Appium Location:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_3">
-                   <item>
-                    <widget class="QLineEdit" name="leAppiumLocation">
-                     <property name="minimumSize">
-                      <size>
-                       <width>0</width>
-                       <height>26</height>
-                      </size>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="btnBrowseAppiumLocation">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="minimumSize">
-                      <size>
-                       <width>0</width>
-                       <height>26</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>Browse</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </widget>
-              </widget>
-             </item>
-             <item>
-              <widget class="QGroupBox" name="grpOutputOptions">
-               <property name="title">
-                <string>Output options</string>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
                </property>
-               <property name="flat">
-                <bool>false</bool>
-               </property>
-               <widget class="QCheckBox" name="cbShowTimeStamp">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>60</y>
-                  <width>125</width>
-                  <height>23</height>
-                 </rect>
-                </property>
-                <property name="autoFillBackground">
-                 <bool>false</bool>
-                </property>
-                <property name="text">
-                 <string>Show timestamp</string>
-                </property>
-               </widget>
-               <widget class="QWidget" name="layoutWidget">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>90</y>
-                  <width>165</width>
-                  <height>28</height>
-                 </rect>
-                </property>
-                <layout class="QHBoxLayout" name="horizontalLayout_4">
-                 <item>
-                  <widget class="QLabel" name="lbOutputMode">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>24</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>Output Mode:</string>
-                   </property>
+               <layout class="QGridLayout" name="gridLayout">
+                <item row="0" column="0">
+                 <widget class="QTabWidget" name="tabWidget">
+                  <property name="currentIndex">
+                   <number>0</number>
+                  </property>
+                  <widget class="QWidget" name="tabMain">
+                   <attribute name="title">
+                    <string>Main</string>
+                   </attribute>
+                   <widget class="QWidget" name="gridLayoutWidget">
+                    <property name="geometry">
+                     <rect>
+                      <x>0</x>
+                      <y>10</y>
+                      <width>259</width>
+                      <height>61</height>
+                     </rect>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_4">
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="lbAppPath">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="text">
+                        <string>Application path (*.apk):</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLineEdit" name="leAppPath">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QCheckBox" name="cbAppPath">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QPushButton" name="btnAppPath">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="text">
+                        <string>Browse</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                   <widget class="QLabel" name="label_2">
+                    <property name="geometry">
+                     <rect>
+                      <x>860</x>
+                      <y>180</y>
+                      <width>57</width>
+                      <height>18</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string>TextLabel</string>
+                    </property>
+                   </widget>
+                   <widget class="QLineEdit" name="lineEdit_3">
+                    <property name="geometry">
+                     <rect>
+                      <x>860</x>
+                      <y>210</y>
+                      <width>113</width>
+                      <height>30</height>
+                     </rect>
+                    </property>
+                   </widget>
+                   <widget class="QComboBox" name="comboBox">
+                    <property name="geometry">
+                     <rect>
+                      <x>870</x>
+                      <y>140</y>
+                      <width>76</width>
+                      <height>26</height>
+                     </rect>
+                    </property>
+                   </widget>
+                   <widget class="QCheckBox" name="checkBox">
+                    <property name="geometry">
+                     <rect>
+                      <x>870</x>
+                      <y>100</y>
+                      <width>86</width>
+                      <height>23</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string>CheckBox</string>
+                    </property>
+                   </widget>
+                   <widget class="QPushButton" name="pushButton">
+                    <property name="geometry">
+                     <rect>
+                      <x>870</x>
+                      <y>70</y>
+                      <width>87</width>
+                      <height>30</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string>PushButton</string>
+                    </property>
+                   </widget>
+                   <widget class="QCheckBox" name="cbDontResetAppState">
+                    <property name="geometry">
+                     <rect>
+                      <x>0</x>
+                      <y>300</y>
+                      <width>191</width>
+                      <height>23</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string>Don't reset application state</string>
+                    </property>
+                   </widget>
+                   <widget class="QCheckBox" name="checkBox_2">
+                    <property name="geometry">
+                     <rect>
+                      <x>830</x>
+                      <y>210</y>
+                      <width>19</width>
+                      <height>20</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                   <widget class="QWidget" name="gridLayoutWidget_2">
+                    <property name="geometry">
+                     <rect>
+                      <x>0</x>
+                      <y>80</y>
+                      <width>251</width>
+                      <height>61</height>
+                     </rect>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_5">
+                     <item row="1" column="0">
+                      <widget class="QCheckBox" name="cbAppPackage">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLineEdit" name="leAppPackage">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="lbAppPackage">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="text">
+                        <string>Package (e.g. .com.app.packageName):</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                   <widget class="QWidget" name="gridLayoutWidget_3">
+                    <property name="geometry">
+                     <rect>
+                      <x>0</x>
+                      <y>150</y>
+                      <width>251</width>
+                      <height>61</height>
+                     </rect>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_6">
+                     <item row="1" column="0">
+                      <widget class="QCheckBox" name="cbAppActivity">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLineEdit" name="leAppActivity">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="lbAppActivity">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="text">
+                        <string>Activity (e.g. MainActivity):</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                   <widget class="QWidget" name="gridLayoutWidget_4">
+                    <property name="geometry">
+                     <rect>
+                      <x>0</x>
+                      <y>220</y>
+                      <width>251</width>
+                      <height>61</height>
+                     </rect>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_7">
+                     <item row="1" column="0">
+                      <widget class="QCheckBox" name="cbWaitForActivity">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLineEdit" name="leWaitForActivity">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="lbWaitForActivity">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="text">
+                        <string>Wait for activity (e.g. MainActivity):</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                   <widget class="QWidget" name="gridLayoutWidget_7">
+                    <property name="geometry">
+                     <rect>
+                      <x>270</x>
+                      <y>80</y>
+                      <width>221</width>
+                      <height>61</height>
+                     </rect>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_10">
+                     <item row="1" column="0">
+                      <widget class="QCheckBox" name="cbDeviceReadyTimeout">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="lbDeviceReadyTimeout">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="text">
+                        <string>Device READY timeout (seconds):</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QSpinBox" name="sbDeviceReadyTimeout">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                   <widget class="QWidget" name="gridLayoutWidget_8">
+                    <property name="geometry">
+                     <rect>
+                      <x>270</x>
+                      <y>10</y>
+                      <width>251</width>
+                      <height>61</height>
+                     </rect>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_11">
+                     <item row="1" column="0">
+                      <widget class="QCheckBox" name="cbDeviceName">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLineEdit" name="leDeviceName">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="lbDeviceName">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="text">
+                        <string>Device name:</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                   <widget class="QSpinBox" name="spinBox">
+                    <property name="geometry">
+                     <rect>
+                      <x>900</x>
+                      <y>250</y>
+                      <width>48</width>
+                      <height>28</height>
+                     </rect>
+                    </property>
+                   </widget>
                   </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="cmbOutputMode">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>24</height>
-                    </size>
-                   </property>
-                   <property name="sizeAdjustPolicy">
-                    <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
-                   </property>
+                  <widget class="QWidget" name="tabLog">
+                   <attribute name="title">
+                    <string>Output / Log</string>
+                   </attribute>
+                   <widget class="QWidget" name="layoutWidget_2">
+                    <property name="geometry">
+                     <rect>
+                      <x>20</x>
+                      <y>120</y>
+                      <width>165</width>
+                      <height>28</height>
+                     </rect>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_4">
+                     <item>
+                      <widget class="QLabel" name="lbOutputMode">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>24</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string>Output Mode:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="cmbOutputMode">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>24</height>
+                        </size>
+                       </property>
+                       <property name="sizeAdjustPolicy">
+                        <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                   <widget class="QCheckBox" name="cbColorOutput">
+                    <property name="geometry">
+                     <rect>
+                      <x>20</x>
+                      <y>30</y>
+                      <width>125</width>
+                      <height>23</height>
+                     </rect>
+                    </property>
+                    <property name="autoFillBackground">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>Color output</string>
+                    </property>
+                   </widget>
+                   <widget class="Line" name="line">
+                    <property name="geometry">
+                     <rect>
+                      <x>203</x>
+                      <y>10</y>
+                      <width>20</width>
+                      <height>271</height>
+                     </rect>
+                    </property>
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                   </widget>
+                   <widget class="QWidget" name="layoutWidget">
+                    <property name="geometry">
+                     <rect>
+                      <x>220</x>
+                      <y>25</y>
+                      <width>221</width>
+                      <height>61</height>
+                     </rect>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_4">
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_5">
+                       <item>
+                        <widget class="QCheckBox" name="cbLogOutput">
+                         <property name="text">
+                          <string>Log to file</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="btnLogOutputBrowse">
+                         <property name="text">
+                          <string>Browse</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="lbLogOutputFileName">
+                       <property name="text">
+                        <string>(none)</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                   <widget class="QWidget" name="layoutWidget">
+                    <property name="geometry">
+                     <rect>
+                      <x>20</x>
+                      <y>60</y>
+                      <width>166</width>
+                      <height>56</height>
+                     </rect>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_5">
+                     <item>
+                      <widget class="QCheckBox" name="cbShowTimeStamp">
+                       <property name="autoFillBackground">
+                        <bool>false</bool>
+                       </property>
+                       <property name="text">
+                        <string>Show timestamp</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_6">
+                       <item>
+                        <spacer name="horizontalSpacer_2">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeType">
+                          <enum>QSizePolicy::Fixed</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>15</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item>
+                        <widget class="QCheckBox" name="cbUseLocalTimeZone">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="text">
+                          <string>Use local time zone</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </widget>
                   </widget>
-                 </item>
-                </layout>
-               </widget>
-               <widget class="QCheckBox" name="cbColorOutput">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>30</y>
-                  <width>125</width>
-                  <height>23</height>
-                 </rect>
-                </property>
-                <property name="autoFillBackground">
-                 <bool>false</bool>
-                </property>
-                <property name="text">
-                 <string>Color output</string>
-                </property>
-               </widget>
+                  <widget class="QWidget" name="tabAppium">
+                   <attribute name="title">
+                    <string>Appium</string>
+                   </attribute>
+                   <widget class="QWidget" name="layoutWidget_3">
+                    <property name="geometry">
+                     <rect>
+                      <x>10</x>
+                      <y>10</y>
+                      <width>301</width>
+                      <height>61</height>
+                     </rect>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_3">
+                     <item>
+                      <widget class="QLabel" name="lbAppiumLocation">
+                       <property name="text">
+                        <string>Appium Location:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_3">
+                       <item>
+                        <widget class="QLineEdit" name="leAppiumLocation">
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>26</height>
+                          </size>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="btnBrowseAppiumLocation">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>26</height>
+                          </size>
+                         </property>
+                         <property name="text">
+                          <string>Browse</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </widget>
+                   <widget class="QCheckBox" name="cbShowStartupCmd">
+                    <property name="geometry">
+                     <rect>
+                      <x>10</x>
+                      <y>80</y>
+                      <width>165</width>
+                      <height>23</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string>Show startup command</string>
+                    </property>
+                   </widget>
+                   <widget class="QWidget" name="layoutWidget_4">
+                    <property name="geometry">
+                     <rect>
+                      <x>10</x>
+                      <y>110</y>
+                      <width>260</width>
+                      <height>61</height>
+                     </rect>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_7">
+                     <property name="sizeConstraint">
+                      <enum>QLayout::SetFixedSize</enum>
+                     </property>
+                     <item>
+                      <layout class="QGridLayout" name="gridLayout_8">
+                       <item row="0" column="1">
+                        <widget class="QLabel" name="lbServerAddress">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="text">
+                          <string>Address:</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QLineEdit" name="leServerAddress">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>138</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QCheckBox" name="cbServerAddress">
+                         <property name="text">
+                          <string/>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <layout class="QGridLayout" name="gridLayout_9">
+                       <item row="1" column="1">
+                        <widget class="QLineEdit" name="leServerPort">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>60</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QLabel" name="lbServerPort">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>Port:</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QCheckBox" name="cbServerPort">
+                         <property name="text">
+                          <string/>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </widget>
+                   <widget class="QWidget" name="gridLayoutWidget_9">
+                    <property name="geometry">
+                     <rect>
+                      <x>10</x>
+                      <y>180</y>
+                      <width>195</width>
+                      <height>59</height>
+                     </rect>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_12">
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="lbServerCommandTimeout">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="text">
+                        <string>Command timeout (seconds):</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QCheckBox" name="cbServerCommandTimeout">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QSpinBox" name="sbServerCommandTimeout">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </widget>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </item>
             </layout>
@@ -361,13 +945,6 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
      </layout>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="lbStatus">
-      <property name="text">
-       <string>Idle.</string>
-      </property>
-     </widget>
     </item>
    </layout>
   </widget>

@@ -71,4 +71,3 @@ class Ui_dlgAbout(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt;\"> - Kirill Omelchenko [kirill.omelchenko@gmail.com]<br /><br /></span></p></body></html>", None))
         self.btnOk.setText(_translate("dlgAbout", "OK", None))
 
-import resources.resources_rc

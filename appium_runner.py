@@ -1,4 +1,6 @@
 #!/usr/bin/python
+import structures.options
+
 __author__ = 'twisted'
 
 import settings
@@ -8,10 +10,12 @@ from PyQt4 import QtGui
 from PyQt4.QtCore import SIGNAL
 
 from about_dlg import AboutDlg
+from helpers.setting_toggle import set_widgets_visible_state
 from models.main_window import Ui_MainWindow
 from models.config_handler import AppiumRunnerConfig
 from models.command_runner import CommandRunner
 from models.output_reader import OutputReader
+from structures.ui_settings_groups import SETTINGS_GROUPS
 
 
 class AppiumRunner(QtGui.QMainWindow):
@@ -36,7 +40,29 @@ class AppiumRunner(QtGui.QMainWindow):
         self.ui.btnBrowseAppiumLocation.clicked.connect(
             self.btnBrowseAppiumLocation_clicked)
 
+        # Settings Checkboxes
+        # self.ui.cbAppPath.clicked.connect(self.cbAppPath_clicked)
+        self.__generate_settings_togglers()
+
         self.running = False
+
+    def __generate_settings_togglers(self):
+        def generate_method(_self, name, _check_box):
+            def _clicked():
+                set_widgets_visible_state(_self.ui, name,
+                                  _check_box.isChecked())
+            return _clicked
+
+        for setting in SETTINGS_GROUPS: # replace with list
+            check_box = getattr(self.ui, 'cb{}'.format(setting), None)
+            if check_box:
+                check_box.clicked.connect(
+                    generate_method(self, setting, check_box))
+
+    #Settings Checkbuttons
+    # def cbAppPath_clicked(self):
+    #     set_widgets_visible_state(self.ui, SettingsGroups.app_path,
+    #                               self.ui.cbAppPath.isChecked())
 
     def __hide_settings(self):
         self.ui.frmSettings.setVisible(False)
@@ -44,7 +70,7 @@ class AppiumRunner(QtGui.QMainWindow):
 
     def __populate_modes_combobox(self):
         index, info_index = 0, 0
-        log_levels = settings.LogLevel.__dict__
+        log_levels = structures.options.LogLevel.__dict__
 
         self.ui.cmbOutputMode.clear()
 
@@ -71,10 +97,10 @@ class AppiumRunner(QtGui.QMainWindow):
         self.config.save()
 
     def __collect_appium_options(self):
-        options = settings.AppiumOptions.TIME_STAMP \
+        options = structures.options.AppiumOptions.TIME_STAMP \
             if self.ui.cbShowTimeStamp.isChecked() else ''
-        options += settings.AppiumOptions.DEFAULT_OPTIONS
-        options += settings.AppiumOptions.LOG_LEVEL_TEMPLATE.format(
+        options += structures.options.AppiumOptions.DEFAULT_OPTIONS
+        options += structures.options.AppiumOptions.LOG_LEVEL_TEMPLATE.format(
             self.ui.cmbOutputMode.currentText())
         return options
 
@@ -127,11 +153,11 @@ class AppiumRunner(QtGui.QMainWindow):
 
 
         if color:
-            if _type == settings.LogLevel.INFO:
+            if _type == structures.options.LogLevel.INFO:
                 _type = _green.format(_type)
-            elif _type == settings.LogLevel.ERROR:
+            elif _type == structures.options.LogLevel.ERROR:
                 _type = _red.format(_type)
-            elif _type == settings.LogLevel.DEBUG:
+            elif _type == structures.options.LogLevel.DEBUG:
                 _type = _blue.format(_type)
             return _template.format(
                 _type, text[:23], _gray.format(text[32:]))
@@ -150,11 +176,11 @@ class AppiumRunner(QtGui.QMainWindow):
             _type = text[26:30]
 
             if color:
-                if _type == settings.LogLevel.INFO:
+                if _type == structures.options.LogLevel.INFO:
                     _type = _green.format(_type)
-                elif _type == settings.LogLevel.ERROR:
+                elif _type == structures.options.LogLevel.ERROR:
                     _type = _red.format(_type)
-                elif _type == settings.LogLevel.DEBUG:
+                elif _type == structures.options.LogLevel.DEBUG:
                     _type = _blue.format(_type)
                 return _template.format(
                     _type, text[:23], _gray.format(text[32:]))
@@ -208,6 +234,8 @@ class AppiumRunner(QtGui.QMainWindow):
     def clean_up(self):
         if self.running:
             self.__kill_appium()
+
+        self.ui.horizontalLayout.children()
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
