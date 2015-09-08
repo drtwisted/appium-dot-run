@@ -90,10 +90,10 @@ class AppiumRunner(QtGui.QMainWindow):
         self.__populate_modes_combobox()
 
     def __save_config(self):
-        self.config.set_appium_location(self.ui.leAppiumLocation.text())
-        self.config.set_log_level(self.ui.cmbOutputMode.currentText())
-        self.config.set_time_stamp(self.ui.cbShowTimeStamp.isChecked())
-        self.config.set_color_output(self.ui.cbColorOutput.isChecked())
+        self.config.appium_location = self.ui.leAppiumLocation.text()
+        self.config.log_level = self.ui.cmbOutputMode.currentText()
+        self.config.time_stamp = self.ui.cbShowTimeStamp.isChecked()
+        self.config.color_output = self.ui.cbColorOutput.isChecked()
         self.config.save()
 
     def __collect_appium_options(self):
