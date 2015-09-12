@@ -207,7 +207,7 @@ color: rgb(231, 231, 231);
                 <item row="0" column="0">
                  <widget class="QTabWidget" name="tabWidget">
                   <property name="currentIndex">
-                   <number>0</number>
+                   <number>2</number>
                   </property>
                   <widget class="QWidget" name="tabMain">
                    <attribute name="title">
@@ -427,21 +427,21 @@ color: rgb(231, 231, 231);
                     </property>
                     <layout class="QGridLayout" name="gridLayout_7">
                      <item row="1" column="0">
-                      <widget class="QCheckBox" name="cbWaitForActivity">
+                      <widget class="QCheckBox" name="cbAppWaitActivity">
                        <property name="text">
                         <string/>
                        </property>
                       </widget>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QLineEdit" name="leWaitForActivity">
+                      <widget class="QLineEdit" name="leAppWaitActivity">
                        <property name="enabled">
                         <bool>false</bool>
                        </property>
                       </widget>
                      </item>
                      <item row="0" column="1">
-                      <widget class="QLabel" name="lbWaitForActivity">
+                      <widget class="QLabel" name="lbAppWaitActivity">
                        <property name="enabled">
                         <bool>false</bool>
                        </property>
@@ -625,14 +625,14 @@ color: rgb(231, 231, 231);
                      <item>
                       <layout class="QHBoxLayout" name="horizontalLayout_5">
                        <item>
-                        <widget class="QCheckBox" name="cbLogOutput">
+                        <widget class="QCheckBox" name="cbLogPath">
                          <property name="text">
                           <string>Log to file</string>
                          </property>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QPushButton" name="btnLogOutputBrowse">
+                        <widget class="QPushButton" name="btnLogPath">
                          <property name="text">
                           <string>Browse</string>
                          </property>
@@ -641,7 +641,7 @@ color: rgb(231, 231, 231);
                       </layout>
                      </item>
                      <item>
-                      <widget class="QLabel" name="lbLogOutputFileName">
+                      <widget class="QLabel" name="lbLogPath">
                        <property name="text">
                         <string>(none)</string>
                        </property>
@@ -883,7 +883,7 @@ color: rgb(231, 231, 231);
                     </property>
                     <layout class="QGridLayout" name="gridLayout_12">
                      <item row="0" column="1">
-                      <widget class="QLabel" name="lbServerCommandTimeout">
+                      <widget class="QLabel" name="lbCommandTimeout">
                        <property name="enabled">
                         <bool>false</bool>
                        </property>
@@ -893,14 +893,14 @@ color: rgb(231, 231, 231);
                       </widget>
                      </item>
                      <item row="1" column="0">
-                      <widget class="QCheckBox" name="cbServerCommandTimeout">
+                      <widget class="QCheckBox" name="cbCommandTimeout">
                        <property name="text">
                         <string/>
                        </property>
                       </widget>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QSpinBox" name="sbServerCommandTimeout">
+                      <widget class="QSpinBox" name="sbCommandTimeout">
                        <property name="enabled">
                         <bool>false</bool>
                        </property>

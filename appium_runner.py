@@ -15,7 +15,8 @@ from models.main_window import Ui_MainWindow
 from models.config_handler import AppiumRunnerConfig
 from models.command_runner import CommandRunner
 from models.output_reader import OutputReader
-from structures.ui_settings_groups import SETTINGS_GROUPS
+from models.options.options import Options
+from structures.ui_options_groups import SETTINGS_GROUPS
 
 
 class AppiumRunner(QtGui.QMainWindow):
@@ -29,6 +30,7 @@ class AppiumRunner(QtGui.QMainWindow):
         self.__hide_settings()
 
         self.config = AppiumRunnerConfig(settings.CONFIG_PATH)
+        self.options_groups = Options(self.ui, self.config)
         self.__read_config()
 
         # Button signals connections
@@ -40,24 +42,28 @@ class AppiumRunner(QtGui.QMainWindow):
         self.ui.btnBrowseAppiumLocation.clicked.connect(
             self.btnBrowseAppiumLocation_clicked)
 
+
         # Settings Checkboxes
         # self.ui.cbAppPath.clicked.connect(self.cbAppPath_clicked)
-        self.__generate_settings_togglers()
+        # self.__generate_settings_togglers()
+
+        # for item in self.config.__dict__:
+        #     print('{}: {}'.format(item, self.config.__dict__[item]))
 
         self.running = False
 
-    def __generate_settings_togglers(self):
-        def generate_method(_self, name, _check_box):
-            def _clicked():
-                set_widgets_visible_state(_self.ui, name,
-                                  _check_box.isChecked())
-            return _clicked
-
-        for setting in SETTINGS_GROUPS: # replace with list
-            check_box = getattr(self.ui, 'cb{}'.format(setting), None)
-            if check_box:
-                check_box.clicked.connect(
-                    generate_method(self, setting, check_box))
+    # def __generate_settings_togglers(self):
+    #     def generate_method(_self, name, _check_box):
+    #         def _clicked():
+    #             set_widgets_visible_state(_self.ui, name,
+    #                               _check_box.isChecked())
+    #         return _clicked
+    #
+    #     for option in self.config.opt.keys():
+    #         check_box = getattr(self.ui, 'cb{}'.format(option), None)
+    #         if check_box:
+    #             check_box.clicked.connect(
+    #                 generate_method(self, option, check_box))
 
     #Settings Checkbuttons
     # def cbAppPath_clicked(self):
@@ -70,13 +76,14 @@ class AppiumRunner(QtGui.QMainWindow):
 
     def __populate_modes_combobox(self):
         index, info_index = 0, 0
+        # TODO: Replace with ordinary dictionary
         log_levels = structures.options.LogLevel.__dict__
 
         self.ui.cmbOutputMode.clear()
 
         for level in sorted(log_levels.keys()):
             if level[:2] != '__':
-                if level.lower() == self.config.log_level:
+                if level.lower() == self.config.log_level():
                     info_index = index
                 self.ui.cmbOutputMode.addItem(log_levels[level])
                 index += 1
@@ -84,16 +91,20 @@ class AppiumRunner(QtGui.QMainWindow):
         self.ui.cmbOutputMode.setCurrentIndex(info_index)
 
     def __read_config(self):
-        self.ui.leAppiumLocation.setText(self.config.appium_location)
-        self.ui.cbShowTimeStamp.setChecked(self.config.time_stamp)
-        self.ui.cbColorOutput.setChecked(self.config.color_output)
+        for option_group in self.options_groups:
+            option_group.load()
+        # self.ui.leAppiumLocation.setText(self.config.appium_location())
+        # self.ui.cbShowTimeStamp.setChecked(self.config.with_time_stamp())
+        # self.ui.cbColorOutput.setChecked(self.config.with_color_output())
         self.__populate_modes_combobox()
 
     def __save_config(self):
-        self.config.appium_location = self.ui.leAppiumLocation.text()
-        self.config.log_level = self.ui.cmbOutputMode.currentText()
-        self.config.time_stamp = self.ui.cbShowTimeStamp.isChecked()
-        self.config.color_output = self.ui.cbColorOutput.isChecked()
+        for option_group in self.options_groups:
+            option_group.update_value().save_()
+        # self.config.set_appium_location(self.ui.leAppiumLocation.text())
+        # self.config.set_log_level(self.ui.cmbOutputMode.currentText())
+        # self.config.set_time_stamp(self.ui.cbShowTimeStamp.isChecked())
+        # self.config.set_color_output(self.ui.cbColorOutput.isChecked())
         self.config.save()
 
     def __collect_appium_options(self):
@@ -115,10 +126,11 @@ class AppiumRunner(QtGui.QMainWindow):
                                       'Appium installation location.')
             return
 
-        self.cmdr = CommandRunner(
-            ['{} {} {}'.format(settings.NODE, cmd, options)])
+        appium_startup_cmd = '{} {} {}'.format(settings.NODE, cmd, options)
+        self.cmdr = CommandRunner([appium_startup_cmd])
         self.cmdr.run()
         self.ui.teOutput.append('>> Starting appium...')
+        self.ui.teOutput.append('   {}'.format(appium_startup_cmd))
         self.reader = OutputReader(self.cmdr, self.ui.teOutput)
         self.connect(self.reader, SIGNAL("update(QString)"),
                      self._print_output)
@@ -141,51 +153,33 @@ class AppiumRunner(QtGui.QMainWindow):
             self, caption='Select Appium directory',
             options=QtGui.QFileDialog.ShowDirsOnly))
 
-    @staticmethod
-    def __parse_output(text, color=False):
-        _template = '>> {}: {} - {}'
-        _color = '<font color={color}>{}</font>'
-        _red = _color.format(color='"red"')
-        _green = _color.format(color='"green"')
-        _blue = _color.format(color='"blue"')
-        _gray = _color.format(color='"gray"')
-        _type = text[26:30]
-
-
-        if color:
-            if _type == structures.options.LogLevel.INFO:
-                _type = _green.format(_type)
-            elif _type == structures.options.LogLevel.ERROR:
-                _type = _red.format(_type)
-            elif _type == structures.options.LogLevel.DEBUG:
-                _type = _blue.format(_type)
-            return _template.format(
-                _type, text[:23], _gray.format(text[32:]))
-        else:
-            return _template.format(_type, text[:23], text[32:])
-
     def _print_output(self, text):
-        def parse_output(text, color=False):
-            _template = '>> {}: {} - {}'
+
+        # print('received text:\n{}'.format(text))
+
+        def parse_output(_text, color=False):
+            template = '>> {}: {} - {}'
             _color = '<font color={color}>{ender}'
-            _ender = '{}</font>'
-            _red = _color.format(color='"red"', ender=_ender)
-            _green = _color.format(color='"green"', ender=_ender)
-            _blue = _color.format(color='"blue"', ender=_ender)
-            _gray = _color.format(color='"gray"', ender=_ender)
-            _type = text[26:30]
+            ender = '{}</font>'
+            red = _color.format(color='"red"', ender=ender)
+            green = _color.format(color='"green"', ender=ender)
+            blue = _color.format(color='"blue"', ender=ender)
+            gray = _color.format(color='"gray"', ender=ender)
+            _time = _text[:23]
+            _type = _text[26:30]
+            message = _text[32:].replace('<', '&lt;').replace('>', '&gt;')
 
             if color:
                 if _type == structures.options.LogLevel.INFO:
-                    _type = _green.format(_type)
+                    _type = green.format(_type)
                 elif _type == structures.options.LogLevel.ERROR:
-                    _type = _red.format(_type)
+                    _type = red.format(_type)
                 elif _type == structures.options.LogLevel.DEBUG:
-                    _type = _blue.format(_type)
-                return _template.format(
-                    _type, text[:23], _gray.format(text[32:]))
+                    _type = blue.format(_type)
+                return template.format(
+                    _type, _time, gray.format(message))
             else:
-                return _template.format(_type, text[:23], text[32:])
+                return template.format(_type, _time, message)
 
         self.ui.teOutput.append(
             parse_output(text, color=self.ui.cbColorOutput.isChecked()))

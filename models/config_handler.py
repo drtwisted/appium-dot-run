@@ -16,37 +16,43 @@ class ConfigHandler(ConfigParser):
             with open(self.__path, 'w') as _file:
                 ConfigParser.write(self, _file)
 
+# TODO: Create generator for options
+
+# TODO: Setter/Getter for Yes/No options, do something about ComboBoxes
 
 class AppiumRunnerConfig(ConfigHandler):
     def __init__(self, config_path):
         ConfigHandler.__init__(self, config_path=config_path)
         self.__identity = 'appiumrunner'
-        self.opt_appiumlocation = 'appium_location'
+        self.opt = dict()
+        self.opt['AppiumLocation'] = ('appium_location', str)
         
         # Log options
-        self.opt_loglevel = 'log_level'
-        self.opt_timestamp = 'time_stamp'
-        self.opt_coloroutput = 'color_output'
-        self.opt_uselocaltimezon = 'use_local_timezone'
-        self.opt_writetolog = 'write_to_log'
-        self.opt_logfilepath = 'log_path'
-        
+        self.opt['LogLevel'] = ('log_level', str)
+        # self.opt['TimeStamp'] = ('time_stamp', bool)
+        self.opt['ColorOutput'] = ('color_output', bool)
+        # self.opt['UseLocalTimezone'] = ('use_local_timezone', bool)
+        # self.opt['WriteToLog'] = ('write_to_log', bool)
+        self.opt['LogPath'] = ('log_path', str)
+
         # Server options
-        self.opt_showstartupcommand = 'show_startup_command'
-        self.opt_serveraddress = 'server_address'
-        self.opt_serverport = 'server_port'
-        self.opt_commandtimeout = 'command_timeout'
-        
+        # self.opt['ShowStartupCommand'] = ('show_startup_command', bool)
+        self.opt['ServerAddress'] = ('server_address', str)
+        self.opt['ServerPort'] = ('server_port', str)
+        self.opt['CommandTimeout'] = ('command_timeout', int)
+
         # Test application options
-        self.opt_apppath = 'app_path'
-        self.opt_appnoreset = 'app_no_reset'
-        self.opt_apppackage = 'app_package'
-        self.opt_appactivity = 'app_activity'
-        self.opt_appwaitactivity = 'app_wait_activity'
-        
+        self.opt['AppPath'] = ('app_path', str)
+        # self.opt['AppNoReset'] = ('app_no_reset', bool)
+        self.opt['AppPackage'] = ('app_package', str)
+        self.opt['AppActivity'] = ('app_activity', str)
+        self.opt['AppWaitActivity'] = ('app_wait_activity', str)
+
         # Device options
-        self.opt_devicereadytimeout = 'device_ready_timeout'
-        self.opt_devicename = 'device_name'
+        self.opt['DeviceReadyTimeout'] = ('device_ready_timeout', int)
+        self.opt['DeviceName'] = ('device_name', str)
+
+        self.__generate_config_options()
 
     def __bool_getter(self, param):
         val = str(self.get(self.__identity, param)).lower()
@@ -63,153 +69,84 @@ class AppiumRunnerConfig(ConfigHandler):
 
         self.set(self.__identity, param, val)
 
+    def __generate_config_options(self):
+        def __generate_set_method(name, _type):
+            if _type == bool:
+                def _setter(_val):
+                    self.__bool_setter(name, _val)
+            elif _type == str or _type == int:
+                def _setter(_val):
+                    self.set(self.__identity, name, str(_val))
+            else:
+                _setter = None
+
+            return _setter
+
+        def __generate_get_method(name, _type):
+            if _type == bool:
+                def _getter():
+                    return self.__bool_getter(name)
+            elif _type == str:
+                def _getter():
+                    _res = self.get(self.__identity, name, fallback='')
+                    # if _res is not None:
+                    #     return tuple(True, str(_res))
+                    # else:
+                    #     return tuple(False, )
+                    return _res
+            elif _type == int:
+                def _getter():
+                    try:
+                        _res = int(self.get(self.__identity, name, fallback=0))
+                    except ValueError:
+                        _res = 0
+                    return int(_res)
+            else:
+                _getter = None
+
+            return _getter
+
+        def __generate_del_method(name):
+            def deleter():
+                try:
+                    self[self.__identity].pop(name)
+                    return True
+                except KeyError:
+                    return False
+
+            return deleter
+
+        for option_name in self.opt.keys():
+            option_method_name, option_type = self.opt[option_name]
+            # print('option: {}'.format(option_method_name))
+            setattr(self, 'set_{}'.format(option_method_name),
+                    __generate_set_method(option_method_name, option_type))
+            # get_method = __generate_get_method(option_method_name, option_type)
+            # setattr(self, 'with_{}'.format(option_method_name)
+            #         if option_type == bool else option_method_name,
+            #         __generate_get_method(option_method_name, option_type))
+            setattr(self, option_method_name,
+                    __generate_get_method(option_method_name, option_type))
+            setattr(self, 'del_{}'.format(option_method_name),
+                    __generate_del_method(option_method_name))
+
     @property
     def is_valid(self):
         return self.__identity in self.sections()
 
-    @property
-    def appium_location(self):
-        return str(self.get(self.__identity, self.opt_appiumlocation))
 
-    @appium_location.setter
-    def appium_location(self, path):
-        self.set(self.__identity, self.opt_appiumlocation, path)
+    def with_time_stamp(self):
+        return self.__bool_getter('time_stamp')
 
-    @property
-    def log_level(self):
-        return str(self.get(self.__identity, self.opt_loglevel)).lower()
+    def set_time_stamp(self, show):
+        self.__bool_setter('time_stamp', show)
 
-    @log_level.setter
-    def log_level(self, level):
-        self.set(self.__identity, self.opt_loglevel, level)
+    def with_color_output(self):
+        return self.__bool_getter('color_output')
 
-    @property
-    def time_stamp(self):
-        return self.__bool_getter(self.opt_timestamp)
+    def set_color_output(self, use):
+        self.__bool_setter('color_output', use)
 
-    @time_stamp.setter
-    def time_stamp(self, show):
-        self.__bool_setter(self.opt_timestamp, show)
-
-    @property
-    def color_output(self):
-        return self.__bool_getter(self.opt_coloroutput)
-
-    @color_output.setter
-    def color_output(self, use):
-        self.__bool_setter(self.opt_coloroutput, use)
-
-    @property
-    def use_local_timezone(self):
-        return self.__bool_getter(self.opt_coloroutput)
-
-    @use_local_timezone.setter
-    def use_local_timezone(self, use):
-        self.__bool_setter(self.opt_coloroutput, use)
-
-    @property
-    def write_to_log(self):
-        return self.__bool_getter(self.opt_coloroutput)
-
-    @write_to_log.setter
-    def write_to_log(self, use):
-        self.__bool_setter(self.opt_coloroutput, use)
-
-    @property
-    def logfile_path(self):
-        return self.__bool_getter(self.opt_coloroutput)
-
-    @logfile_path.setter
-    def logfile_path(self, use):
-        self.__bool_setter(self.opt_coloroutput, use)
-
-    @property
-    def show_startup_command(self):
-        return self.__bool_getter(self.opt_coloroutput)
-
-    # Server options
-    @show_startup_command.setter
-    def show_startup_command(self, use):
-        self.__bool_setter(self.opt_coloroutput, use)
-
-    @property
-    def server_address(self):
-        return self.__bool_getter(self.opt_coloroutput)
-
-    @server_address.setter
-    def server_address(self, use):
-        self.__bool_setter(self.opt_coloroutput, use)
-
-    @property
-    def server_port(self):
-        return self.__bool_getter(self.opt_coloroutput)
-
-    @server_port.setter
-    def server_port(self, use):
-        self.__bool_setter(self.opt_coloroutput, use)
-        
-    @property
-    def command_timeout(self):
-        return self.__bool_getter(self.opt_coloroutput)
-
-    @command_timeout.setter
-    def command_timeout(self, use):
-        self.__bool_setter(self.opt_coloroutput, use)
-
-    # Test application options
-    @property
-    def app_path(self):
-        return self.__bool_getter(self.opt_coloroutput)
-
-    @app_path.setter
-    def app_path(self, use):
-        self.__bool_setter(self.opt_coloroutput, use)
-
-    @property
-    def app_no_reset(self):
-        return self.__bool_getter(self.opt_coloroutput)
-
-    @app_no_reset.setter
-    def app_no_reset(self, use):
-        self.__bool_setter(self.opt_coloroutput, use)
-
-    @property
-    def app_package(self):
-        return self.__bool_getter(self.opt_coloroutput)
-
-    @app_package.setter
-    def app_package(self, use):
-        self.__bool_setter(self.opt_coloroutput, use)
-
-    @property
-    def app_activity(self):
-        return self.__bool_getter(self.opt_coloroutput)
-
-    @app_activity.setter
-    def app_activity(self, use):
-        self.__bool_setter(self.opt_coloroutput, use)
-
-    @property
-    def app_wait_activity(self):
-        return self.__bool_getter(self.opt_coloroutput)
-
-    @app_wait_activity.setter
-    def app_wait_activity(self, use):
-        self.__bool_setter(self.opt_coloroutput, use)
-
-    # Device options
-    @property
-    def device_ready_timeout(self):
-        return self.__bool_getter(self.opt_coloroutput)
-
-    @device_ready_timeout.setter
-    def device_ready_timeout(self, use):
-        self.__bool_setter(self.opt_coloroutput, use)
-
-    @property
-    def device_name(self):
-        return self.__bool_getter(self.opt_coloroutput)
-
-    @device_name.setter
-    def device_name(self, use):
-        self.__bool_setter(self.opt_coloroutput, use)
+# For testing
+if __name__ == '__main__':
+    a = AppiumRunnerConfig('./config.ini')
