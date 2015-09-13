@@ -24,7 +24,8 @@ class Option(object):
         self.__name = name
         self.__method_name, self.__type = self.__config.opt[self.__name]
         self.__ui = ui
-        self.__container = self.__get_value_container()
+        self.__container, self.__sidekicks \
+            = self.__get_value_container_and_sidekicks()
         self.checkbox = getattr(self.__ui, 'cb{}'.format(self.__name), None)
         if self.__container is None:
             self.__container = self.checkbox
@@ -43,18 +44,31 @@ class Option(object):
             self.checkbox.clicked.connect(
                 self.__generate_method())
 
-    def __get_value_container(self):
+    def __get_value_container_and_sidekicks(self):
+        container, sidekicks = None, list()
         for prefix in ('le', 'sb', 'lb', 'cb'):
             try:
-                container = getattr(self.__ui,
-                                    '{}{}'.format(prefix, self.__name))
+                element = getattr(self.__ui,
+                                   '{}{}'.format(prefix, self.__name))
+                if not container:
+                    container = element
+                else:
+                    sidekicks.append(element)
                 # print('Container: {}'.format(container.__name__))
-                return container
+                return container, sidekicks
             except AttributeError:
                 # print('No {} container for {}'.format(prefix, self.__name))
                 pass
 
         return None
+
+    def __enable_elements(self):
+        try:
+            self.checkbox.setChecked(True)
+            for element in self.__sidekicks + [self.__container]:
+                element.setEnabled(True)
+        except AttributeError:
+            print('Could not enable elemtnts of {}'.format(self.__method_name))
 
     def __update_state(self, state):
         if self.checkbox:
@@ -77,28 +91,33 @@ class Option(object):
         getter = getattr(self.__config, self.__method_name)
         if hasattr(getter, '__call__'):
             value = getter()
+
+            try:
+                value = self.__type(value)
+                print('{} value set'.format(self.__method_name))
+                try:   # Set value with corresponding method, see type_methods dict
+                    try:
+                        getattr(self.__container, type_methods.get(
+                            self.__type))(value)
+                        self.__enable_elements()
+                        print('Set value in ui')
+                    except IndexError:
+                        print('Cant set value of type {}'.format(self.__type))
+                except AttributeError:
+                    print('Failed to set {} value {} for {}'.format(
+                        self.__type, value, self.__container))
+            except ValueError:
+                print(
+                    '{} parameter value {} is invalid.'.format(
+                        self.__method_name,
+                        value) + ' Should be of {} type'.format(
+                        str(self.__type)))
+
         else:
             print('{} is not callable, cant get value for {}'.format(
                 getter, self.__method_name))
 
-        try:
-            value = self.__type(value)
-            print('{} value set'.format(self.__method_name))
-        except ValueError:
-            print(
-                '{} parameter value {} is invalid.'.format(self.__method_name,
-                                                           value) +
-                ' Should be of {} type'.format(str(self.__type)))
 
-        try:    # Set value with corresponding method, see type_methods dict
-            try:
-                getattr(self.__container, type_methods.get(self.__type))(value)
-                print('Set value in ui')
-            except IndexError:
-                print('Cant set value of type {}'.format(self.__type))
-        except AttributeError:
-            print('Failed to set {} value {} for {}'.format(
-                self.__type, value, self.__container))
 
         # TODO: work with bool
 

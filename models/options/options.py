@@ -26,3 +26,4 @@ class Options(object):
     def __iter__(self):
         for option_name in list(self.__config.opt):
             yield self.__getitem__(option_name)
+1
