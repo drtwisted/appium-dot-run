@@ -1,7 +1,9 @@
 __author__ = 'twisted'
+from os.path import abspath, dirname
 
 NODE = 'node'
-CONFIG_PATH = './settings.ini'
+BASE_PATH = abspath(dirname(__file__))
+CONFIG_PATH = '{}/settings.ini'.format(BASE_PATH)
 
 
 class AppiumOptions:
