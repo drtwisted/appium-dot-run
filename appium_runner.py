@@ -4,6 +4,7 @@ __author__ = 'twisted'
 import settings
 import sys
 
+from json import loads, dumps
 from PyQt4 import QtGui
 from PyQt4.QtCore import SIGNAL
 
@@ -64,15 +65,15 @@ class AppiumRunner(QtGui.QMainWindow):
         self.__populate_modes_combobox()
 
     def __save_config(self):
-        self.config.set_appium_location(self.ui.leAppiumLocation.text())
-        self.config.set_log_level(self.ui.cmbOutputMode.currentText())
-        self.config.set_time_stamp(self.ui.cbShowTimeStamp.isChecked())
-        self.config.set_color_output(self.ui.cbColorOutput.isChecked())
+        self.config.appium_location = self.ui.leAppiumLocation.text()
+        self.config.log_level = self.ui.cmbOutputMode.currentText()
+        self.config.time_stamp = self.ui.cbShowTimeStamp.isChecked()
+        self.config.color_output = self.ui.cbColorOutput.isChecked()
         self.config.save()
 
     def __collect_appium_options(self):
-        options = settings.AppiumOptions.TIME_STAMP \
-            if self.ui.cbShowTimeStamp.isChecked() else ''
+        options = (settings.AppiumOptions.TIME_STAMP
+                   if self.ui.cbShowTimeStamp.isChecked() else '')
         options += settings.AppiumOptions.DEFAULT_OPTIONS
         options += settings.AppiumOptions.LOG_LEVEL_TEMPLATE.format(
             self.ui.cmbOutputMode.currentText())
@@ -111,9 +112,11 @@ class AppiumRunner(QtGui.QMainWindow):
         self.running = False
 
     def __select_appium_dir(self):
-        return str(QtGui.QFileDialog.getExistingDirectory(
-            self, caption='Select Appium directory',
-            options=QtGui.QFileDialog.ShowDirsOnly))
+        return str(
+            QtGui.QFileDialog.getExistingDirectory(
+                self,
+                caption='Select Appium directory',
+                options=QtGui.QFileDialog.ShowDirsOnly))
 
     @staticmethod
     def __parse_output(text, color=False):
@@ -124,7 +127,6 @@ class AppiumRunner(QtGui.QMainWindow):
         _blue = _color.format(color='"blue"')
         _gray = _color.format(color='"gray"')
         _type = text[26:30]
-
 
         if color:
             if _type == settings.LogLevel.INFO:
@@ -139,30 +141,128 @@ class AppiumRunner(QtGui.QMainWindow):
             return _template.format(_type, text[:23], text[32:])
 
     def _print_output(self, text):
-        def parse_output(text, color=False):
-            _template = '>> {}: {} - {}'
-            _color = '<font color={color}>{ender}'
-            _ender = '{}</font>'
-            _red = _color.format(color='"red"', ender=_ender)
-            _green = _color.format(color='"green"', ender=_ender)
-            _blue = _color.format(color='"blue"', ender=_ender)
-            _gray = _color.format(color='"gray"', ender=_ender)
-            _type = text[26:30]
+        print('text: {}'.format(text))
+        color = '<font color={color}>{ender}'
+        ender = '{}</font>'
+        red = color.format(color='"red"', ender=ender)
+        yellow = color.format(color='"yellow"', ender=ender)
+        orange = color.format(color='"orange"', ender=ender)
+        lime = color.format(color='"lime"', ender=ender)
+        green = color.format(color='"forestgreen"', ender=ender)
+        teal = color.format(color='"teal"', ender=ender)
+        ligth_steel_blue = color.format(color='"lightsteelblue"', ender=ender)
 
-            if color:
-                if _type == settings.LogLevel.INFO:
-                    _type = _green.format(_type)
-                elif _type == settings.LogLevel.ERROR:
-                    _type = _red.format(_type)
-                elif _type == settings.LogLevel.DEBUG:
-                    _type = _blue.format(_type)
-                return _template.format(
-                    _type, text[:23], _gray.format(text[32:]))
+        def parse_json(message):
+            do_format = False
+
+            def found(res):
+                return res >= 0
+
+            def find_json_margin(text, end=False):
+                def get_bigger(first, second):
+                    if first > second:
+                        return first
+                    else:
+                        return second
+
+                opened = ('{', '[')
+                closed = (']', '}')
+
+                if end:
+                    text_to_find = closed
+                else:
+                    text_to_find = opened
+
+                first_priority_pos = text.find(text_to_find[0])
+                second_priority_pos = text.find(text_to_find[1])
+
+                if found(first_priority_pos) and found(second_priority_pos):
+                    return get_bigger(first_priority_pos, second_priority_pos)
+                else:
+                    if found(first_priority_pos):
+                        return first_priority_pos
+                    elif found(second_priority_pos):
+                        return second_priority_pos
+                    else:
+                        return -1
+
+            json_start = find_json_margin(message)
+            if found(json_start):
+                json_end = find_json_margin(message, end=True)
+                if found(json_end):
+                    do_format = True
+
+            if do_format:
+                return '{pre}<br/>{JSON}{rest}'.format(
+                    pre=message[:json_start],
+                    JSON=dumps(
+                        loads(message[json_start:json_end + 1]),
+                        indent=2,
+                        separators=(',', ': ')
+                    ).replace('\n', '<br/>').replace(' ' * 2, '&nbsp;' * 2),
+                    rest=message[json_end + 1:])
             else:
-                return _template.format(_type, text[:23], text[32:])
+                return message
 
-        self.ui.teOutput.append(
-            parse_output(text, color=self.ui.cbColorOutput.isChecked()))
+        def parse_request(message, _color=False):
+            send_id = '<--'
+            send_text = 'SEND&gt;'
+            receive_id = '-->'
+            receive_text = 'RECV&lt;'
+
+            if _color:
+                send = lime.format(send_text)
+                receive = orange.format(receive_text)
+            else:
+                send = send_text
+                receive = receive_text
+
+            message = (
+                message.replace(send_id, send)
+                if send_id in message
+                else message.replace(receive_id, receive)
+                if receive_id in message else message)
+
+            return message
+
+        def parse_output(_text, _color=False):
+            DEBUG_TYPE = 'debg'
+            template = '>> {}: {} - {}'
+            date_n_time = _text[:23]
+            message_flag = _text[33:38]
+            _type = _text[26:30]
+
+            if message_flag == settings.LogLevel.DEBUG:
+                _type = message_flag
+                message = _text[40:]
+            else:
+                message = _text[32:]
+
+            message = parse_request(message, _color=_color)
+            message = parse_json(message)
+
+            if _color:
+                if _type == settings.LogLevel.INFO:
+                    _type = green.format(_type)
+                elif _type == settings.LogLevel.ERROR:
+                    _type = red.format(_type)
+                elif _type == settings.LogLevel.WARN:
+                    _type == yellow.foramt(_type)
+                elif _type == settings.LogLevel.DEBUG:
+                    _type = teal.format(DEBUG_TYPE)
+                report_string = template.format(
+                    _type, date_n_time, ligth_steel_blue.format(
+                        parse_request(message, _color=_color)))
+            else:
+                report_string =  template.format(_type, date_n_time, message)
+
+            return report_string
+
+        __text = parse_output(text, _color=self.ui.cbColorOutput.isChecked())
+        # decorator = '-' * 20
+        # print(decorator + '\nFORMATED: \n{}\n'.format(__text) + decorator)
+
+        self.ui.teOutput.append(__text)
 
     def _clear_output(self):
         self.ui.teOutput.clear()
