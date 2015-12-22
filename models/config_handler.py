@@ -49,26 +49,30 @@ class AppiumRunnerConfig(ConfigHandler):
     def appium_location(self):
         return str(self.get(self.__identity, self.opt_appiumlocation))
 
-    def set_appium_location(self, path):
+    @appium_location.setter
+    def appium_location(self, path):
         self.set(self.__identity, self.opt_appiumlocation, path)
 
     @property
     def log_level(self):
         return str(self.get(self.__identity, self.opt_loglevel)).lower()
 
-    def set_log_level(self, level):
+    @log_level.setter
+    def log_level(self, level):
         self.set(self.__identity, self.opt_loglevel, level)
 
     @property
     def time_stamp(self):
         return self.__bool_getter(self.opt_timestamp)
 
-    def set_time_stamp(self, show):
+    @time_stamp.setter
+    def time_stamp(self, show):
         self.__bool_setter(self.opt_timestamp, show)
 
     @property
     def color_output(self):
         return self.__bool_getter(self.opt_coloroutput)
 
-    def set_color_output(self, use):
+    @color_output.setter
+    def color_output(self, use):
         self.__bool_setter(self.opt_coloroutput, use)
