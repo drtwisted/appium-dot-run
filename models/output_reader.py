@@ -21,9 +21,9 @@ class OutputReader(QtCore.QThread):
         if self.__cmdr is not None:
             self.__stop = False
             while not self.__stop:
-                line = \
-                    self.__cmdr.get_process()\
-                        .stdout.readline().decode().replace('\n', '')
+                line = (
+                    self.__cmdr.get_process()
+                        .stdout.readline().decode().replace('\n', ''))
 
                 if str(line) != '':
                     self.emit(QtCore.SIGNAL('update(QString)'),
