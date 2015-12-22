@@ -1,4 +1,4 @@
-- New settings inverface
+- New settings interface
 - options:
     * Show appium startup command
     * write to log: -g --log
